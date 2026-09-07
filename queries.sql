@@ -2,12 +2,8 @@
 -- FOUR SQL QUERY USE CASES
 -- ============================================================
 
--- ------------------------------------------------------------
+
 -- USE CASE 1 (SIMPLE): High-income customers for premium product targeting
--- Scenario: The marketing team wants to identify customers earning
--- more than $100,000 per year to target them with premium investment
--- loan products.
--- Single table, WHERE clause with a comparison operator (>).
 -- ------------------------------------------------------------
 SELECT first_name, last_name, employment_status, annual_income
 FROM CUSTOMER
