@@ -92,6 +92,20 @@ CREATE TABLE PROPERTY_VALUATION (
 );
 
 -- ------------------------------------------------------------
+-- PROPERTY_OWNERSHIP (M:N junction table resolving CUSTOMER <-> PROPERTY)
+-- A property can have joint owners; a customer can own multiple properties.
+-- ------------------------------------------------------------
+CREATE TABLE PROPERTY_OWNERSHIP (
+    customer_id          INTEGER NOT NULL,
+    property_id          INTEGER NOT NULL,
+    ownership_percentage DECIMAL(5,2) NOT NULL CHECK (ownership_percentage > 0 AND ownership_percentage <= 100),
+    ownership_type       TEXT NOT NULL CHECK (ownership_type IN ('Sole','Joint Tenants','Tenants in Common')),
+    PRIMARY KEY (customer_id, property_id),
+    FOREIGN KEY (customer_id) REFERENCES CUSTOMER(customer_id),
+    FOREIGN KEY (property_id) REFERENCES PROPERTY(property_id)
+);
+
+-- ------------------------------------------------------------
 -- MORTGAGE_APPLICATION
 -- ------------------------------------------------------------
 CREATE TABLE MORTGAGE_APPLICATION (

@@ -52,6 +52,21 @@ INSERT INTO PROPERTY_VALUATION (property_id, valuation_number, valuation_date, v
 (7,1,'2026-01-30',950000,'Top End Valuation Services','Full Inspection'),
 (8,1,'2026-05-12',495000,'Darwin Valuations Pty Ltd','Full Inspection');
 
+-- PROPERTY_OWNERSHIP: M:N between CUSTOMER and PROPERTY.
+-- Demonstrates both directions of the many-to-many: property_id=2 has two
+-- joint owners, and customer_id=1 owns two properties (1 and 6).
+INSERT INTO PROPERTY_OWNERSHIP (customer_id, property_id, ownership_percentage, ownership_type) VALUES
+(1,1,100.00,'Sole'),
+(2,2,50.00,'Joint Tenants'),
+(3,2,50.00,'Joint Tenants'),
+(3,3,100.00,'Sole'),
+(4,4,100.00,'Sole'),
+(5,5,70.00,'Tenants in Common'),
+(6,5,30.00,'Tenants in Common'),
+(1,6,100.00,'Sole'),
+(7,7,100.00,'Sole'),
+(8,8,100.00,'Sole');
+
 INSERT INTO MORTGAGE_APPLICATION (customer_id, broker_id, property_id, product_id, application_date, requested_amount, application_status) VALUES
 (1,1,1,1,'2026-02-01',500000,'Approved'),
 (2,2,2,3,'2026-02-10',430000,'Approved'),
