@@ -33,25 +33,36 @@ ORDER BY base_interest_rate ASC;
 -- USE CASE 3 (MODERATELY COMPLEX): Broker pipeline report
 -- Scenario: A broker manager wants a report of every mortgage
 -- application, showing the customer, the broker handling it, the
--- property involved and the lender/product being applied for, so
--- they can review the current pipeline at a glance.
--- Joins 3+ tables.
+-- property involved, that customer's ownership stake in the property
+-- (from the PROPERTY_OWNERSHIP M:N junction table), and the
+-- lender/product being applied for, so they can review the current
+-- pipeline at a glance.
+-- Joins 6 tables, including the PROPERTY_OWNERSHIP junction table
+-- resolving the CUSTOMER <-> PROPERTY many-to-many relationship.
+-- PROPERTY_OWNERSHIP is LEFT JOINed rather than inner-joined: an
+-- applicant is not always yet a registered owner of the property they
+-- are applying against (e.g. a new purchase), so an inner join would
+-- silently drop those applications from the pipeline report.
 -- ------------------------------------------------------------
 SELECT
     ma.application_id,
     c.first_name || ' ' || c.last_name AS customer_name,
     b.first_name || ' ' || b.last_name AS broker_name,
     p.suburb || ', ' || p.state AS property_location,
+    po.ownership_percentage,
+    po.ownership_type,
     lp.product_name,
     l.lender_name,
     ma.requested_amount,
     ma.application_status
 FROM MORTGAGE_APPLICATION ma
-JOIN CUSTOMER c        ON ma.customer_id = c.customer_id
-JOIN BROKER b           ON ma.broker_id = b.broker_id
-JOIN PROPERTY p          ON ma.property_id = p.property_id
-JOIN LOAN_PRODUCT lp     ON ma.product_id = lp.product_id
-JOIN LENDER l            ON lp.lender_id = l.lender_id
+JOIN CUSTOMER c                  ON ma.customer_id = c.customer_id
+JOIN BROKER b                     ON ma.broker_id = b.broker_id
+JOIN PROPERTY p                    ON ma.property_id = p.property_id
+LEFT JOIN PROPERTY_OWNERSHIP po    ON po.property_id = ma.property_id
+                                   AND po.customer_id = ma.customer_id
+JOIN LOAN_PRODUCT lp               ON ma.product_id = lp.product_id
+JOIN LENDER l                      ON lp.lender_id = l.lender_id
 ORDER BY ma.application_date;
 
 
